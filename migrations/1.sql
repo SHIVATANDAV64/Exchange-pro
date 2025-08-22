@@ -1,0 +1,20 @@
+
+CREATE TABLE exchange_rates (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  base_currency TEXT NOT NULL,
+  target_currency TEXT NOT NULL,
+  rate REAL NOT NULL,
+  rate_date DATE NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE currency_history (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  base_currency TEXT NOT NULL,
+  target_currency TEXT NOT NULL,
+  rate REAL NOT NULL,
+  timestamp DATETIME NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
