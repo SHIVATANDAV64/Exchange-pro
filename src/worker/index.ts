@@ -1,9 +1,21 @@
-/// <reference path="./env.d.ts" />
+
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { ConversionRequestSchema, SUPPORTED_CURRENCIES } from "@/shared/types";
+import { Client, Databases, Query } from "appwrite";
 
-const app = new Hono<{ Bindings: Env }>();
+// Initialize Appwrite client
+const client = new Client();
+client
+  .setEndpoint(process.env.APPWRITE_ENDPOINT!)
+  .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID!);
+const databases = new Databases(client);
+
+const DATABASE_ID = process.env.APPWRITE_DATABASE_ID!;
+const RATES_COLLECTION_ID = process.env.APPWRITE_RATES_COLLECTION_ID!;
+const HISTORY_COLLECTION_ID = process.env.APPWRITE_HISTORY_COLLECTION_ID!;
+
+const app = new Hono();
 
 // External API endpoint for fetching exchange rates
 const EXCHANGE_RATE_API_URL = "https://api.exchangerate-api.com/v4/latest";
@@ -32,7 +44,26 @@ app.get("/api/rates", async (c) => {
     
     if (data.rates) {
       // Store rates in database
-      const db = c.env.DB;
+      // Store rates in Appwrite Database
+      for (const [currency, rate] of Object.entries(data.rates)) {
+        if (SUPPORTED_CURRENCIES.find(c => c.code === currency)) {
+          try {
+            await databases.createDocument(
+              DATABASE_ID,
+              RATES_COLLECTION_ID,
+              "unique()",
+              {
+                base_currency: 'USD',
+                target_currency: currency,
+                rate: rate as number,
+                rate_date: new Date().toISOString().split('T')[0]
+              }
+            );
+          } catch (e) {
+            // Ignore duplicate errors or handle as needed
+          }
+        }
+      }
       for (const [currency, rate] of Object.entries(data.rates)) {
         if (SUPPORTED_CURRENCIES.find(c => c.code === currency)) {
           await db.prepare(
@@ -111,12 +142,24 @@ app.get("/api/history/:base/:target/:period", async (c) => {
   const startDate = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000));
   
   try {
-    const result = await db.prepare(
-      "SELECT * FROM currency_history WHERE base_currency = ? AND target_currency = ? AND timestamp >= ? ORDER BY timestamp DESC LIMIT 100"
-    ).bind(base, target, startDate.toISOString()).all();
-    
-    if (result.results.length > 0) {
-      return c.json({ history: result.results });
+    // Fetch historical rates from Appwrite Database
+    try {
+      const result = await databases.listDocuments(
+        DATABASE_ID,
+        HISTORY_COLLECTION_ID,
+        [
+          Query.equal("base_currency", base),
+          Query.equal("target_currency", target),
+          Query.greaterThanEqual("timestamp", startDate.toISOString()),
+          Query.orderDesc("timestamp"),
+          Query.limit(100)
+        ]
+      );
+      if (result.documents.length > 0) {
+        return c.json({ history: result.documents });
+      }
+    } catch (e) {
+      // Fallback to mock data below
     }
   } catch (error) {
     console.error('Error fetching historical data:', error);
