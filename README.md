@@ -1,29 +1,48 @@
-# Exchange-pro 💱
+# ⚡ Node.js Starter Function
 
-![GitHub repo size](https://img.shields.io/github/repo-size/Kushmitha-VV/Exchange-pro?style=flat-square)
-![GitHub last commit](https://img.shields.io/github/last-commit/Kushmitha-VV/Exchange-pro?style=flat-square)
-![GitHub issues](https://img.shields.io/github/issues/Kushmitha-VV/Exchange-pro?style=flat-square)
-![License](https://img.shields.io/github/license/Kushmitha-VV/Exchange-pro?style=flat-square)
+A simple starter function. Edit `src/main.js` to get started and create something awesome! 🚀
 
+## 🧰 Usage
 
-## 🔹 Overview
-*Exchange-pro* is a *currency converter and exchange rate tracker* that allows users to convert currencies in real-time.  
-It is built to be *fast, lightweight, and user-friendly*.
+### GET /ping
 
+- Returns a "Pong" message.
 
-## 🚀 Features
-- 🌐 Real-time currency exchange rates  
-- 🖥 Responsive and intuitive interface  
-- ⚡ Fast and lightweight  
-- 🔄 Supports multiple currencies  
+**Response**
 
+Sample `200` Response:
 
-## 🛠 Tech Stack
-- *Frontend:* HTML, CSS, JavaScript  
-- *Backend / API:https://www.exchangerate-api.com  
- 
+```text
+Pong
+```
 
-## 🎯 How to Run
-1. Clone the repository:
-'''bash
-git clone https://github.com/Kushmitha-VV/Exchange-pro.git
+### GET, POST, PUT, PATCH, DELETE /
+
+- Returns a "Learn More" JSON response.
+
+**Response**
+
+Sample `200` Response:
+
+```json
+{
+  "motto": "Build like a team of hundreds_",
+  "learn": "https://appwrite.io/docs",
+  "connect": "https://appwrite.io/discord",
+  "getInspired": "https://builtwith.appwrite.io"
+}
+```
+
+## ⚙️ Configuration
+
+| Setting           | Value         |
+| ----------------- | ------------- |
+| Runtime           | Node (18.0)   |
+| Entrypoint        | `src/main.js` |
+| Build Commands    | `npm install` |
+| Permissions       | `any`         |
+| Timeout (Seconds) | 15            |
+
+## 🔒 Environment Variables
+
+No environment variables required.
