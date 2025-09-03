@@ -1,3 +1,4 @@
+/// <reference path="./env.d.ts" />
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { ConversionRequestSchema, SUPPORTED_CURRENCIES } from "@/shared/types";
