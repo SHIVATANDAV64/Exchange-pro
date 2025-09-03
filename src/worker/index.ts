@@ -128,7 +128,7 @@ app.get("/api/history/:base/:target/:period", async (c) => {
   const base = c.req.param('base');
   const target = c.req.param('target');
   const period = c.req.param('period');
-  const db = c.env.DB;
+  // const db = ... (removed, use Appwrite SDK only)
   
   // Calculate date range based on period
   const now = new Date();
